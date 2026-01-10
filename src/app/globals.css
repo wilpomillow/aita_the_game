@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  @apply bg-white text-zinc-900 font-body;
+}
+
+::selection {
+  background: #ff4500;
+  color: white;
+}
+
+.comic-card {
+  border: 2px solid rgba(0, 0, 0, 0.9);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+.comic-btn {
+  border: 2px solid rgba(0, 0, 0, 0.9);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.comic-btn:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+.comic-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
