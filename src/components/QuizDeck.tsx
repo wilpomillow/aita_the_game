@@ -83,12 +83,7 @@ function expectedChoiceFromVerdict(v: unknown): "yes" | "no" | null {
     return "yes"
   }
 
-  if (
-    s === "nta" ||
-    s.includes("not the asshole") ||
-    s.includes("no not the asshole") ||
-    (s.includes("not") && s.includes("asshole"))
-  ) {
+  if (s === "nta" || s.includes("not the asshole") || s.includes("no not the asshole") || (s.includes("not") && s.includes("asshole"))) {
     return "no"
   }
 
@@ -174,7 +169,6 @@ export default function QuizDeck() {
 
   function answer(choice: "yes" | "no") {
     if (!current) return
-
     const expected = expectedChoiceFromVerdict((current as any).topCommentVerdict)
     const ok = expected ? choice === expected : false
 
@@ -211,42 +205,76 @@ export default function QuizDeck() {
   const verdictIcon =
     verdict === "correct" ? <CheckCircle2 className="h-5 w-5 text-[#FF4500]" /> : <XCircle className="h-5 w-5 text-[#FF4500]/70" />
 
+  const shownIndex = loading ? 0 : Math.min(index + 1, Math.max(total, 1))
+
   return (
     <section className="grid gap-6">
       <div className="overflow-hidden rounded-2xl border border-black/10 bg-white/80 shadow-[0_1px_6px_rgba(0,0,0,0.05)] backdrop-blur">
-        <div className="grid grid-cols-1 items-center sm:grid-cols-[auto_1fr_auto]">
-          <div className="flex items-center gap-3 bg-[#FF4500] px-4 py-3 sm:py-4">
+        <div className="grid grid-cols-1 items-stretch sm:grid-cols-[auto_1fr]">
+          <div className="flex items-center justify-between gap-3 bg-[#FF4500] px-4 py-3 sm:py-4">
             <div className="inline-flex items-center gap-2 rounded-xl bg-[#FF4500] px-3 py-2">
               <Trophy className="h-5 w-5 text-white" />
               <span className="font-display text-xl uppercase tracking-wide text-white">SCORE</span>
             </div>
+
+            <span className="sm:hidden font-display text-lg text-white/90">
+              {shownIndex}
+              <span className="mx-1 text-white/70">/</span>
+              <span className="text-white/70">{total}</span>
+            </span>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 sm:py-4">
-            <div className="flex items-baseline gap-3">
+          <div className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:gap-4 sm:py-4">
+            <div className="hidden shrink-0 sm:flex items-baseline gap-3">
               <span className="font-display text-xl text-zinc-700">
-                {loading ? 0 : Math.min(index + 1, Math.max(total, 1))}
+                {shownIndex}
                 <span className="mx-1 text-zinc-400">/</span>
                 <span className="text-zinc-400">{total}</span>
               </span>
             </div>
 
-            <div className="flex items-center gap-2">
-              <Badge className={correctPill}>🫏 {score.correct}</Badge>
-              <Badge className={wrongPill}>❌ {score.wrong}</Badge>
+            <div className="grid w-full grid-cols-4 gap-2 sm:gap-3">
+              {/* Correct */}
+              <Badge
+                className={`${correctPill} w-full min-w-[48px] justify-center px-3 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm shadow-none before:hidden after:hidden`}
+              >
+                <span className="sm:hidden">✅</span>
+                <span className="hidden sm:inline">🫏</span>
+                <span className="ml-1">{score.correct}</span>
+              </Badge>
+
+              {/* Wrong */}
+              <Badge
+                className={`${wrongPill} w-full min-w-[48px] justify-center px-3 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm shadow-none before:hidden after:hidden`}
+              >
+                ❌ <span className="ml-1">{score.wrong}</span>
+              </Badge>
+
+              {/* Shuffle */}
+              <button
+                type="button"
+                onClick={reshuffle}
+                className={`${ctrlPill} w-full min-w-[48px] justify-center px-3 shadow-none before:hidden after:hidden`}
+                aria-label="Shuffle"
+                title="Shuffle"
+              >
+                <Sparkles className="h-4 w-4 text-[#FF4500]" />
+                <span className="hidden sm:inline text-sm font-medium">Shuffle</span>
+              </button>
+
+              {/* Reset */}
+              <button
+                type="button"
+                onClick={resetScore}
+                className={`${ctrlPill} w-full min-w-[48px] justify-center px-3 shadow-none before:hidden after:hidden`}
+                aria-label="Reset"
+                title="Reset"
+              >
+                <RefreshCcw className="h-4 w-4" />
+                <span className="hidden sm:inline text-sm font-medium">Reset</span>
+              </button>
             </div>
-          </div>
 
-          <div className="flex items-center justify-start gap-2 px-4 pb-4 sm:justify-end sm:py-4">
-            <button type="button" onClick={reshuffle} className={ctrlPill}>
-              <Sparkles className="h-4 w-4 text-[#FF4500]" />
-              <span className="text-sm font-medium">Shuffle</span>
-            </button>
-
-            <button type="button" onClick={resetScore} className={ctrlPill}>
-              <RefreshCcw className="h-4 w-4" />
-              <span className="text-sm font-medium">Reset</span>
-            </button>
           </div>
         </div>
       </div>
@@ -289,7 +317,7 @@ export default function QuizDeck() {
                 >
                   <Card className="comic-card flex h-full flex-col rounded-2xl bg-white">
                     <CardHeader>
-                      <CardTitle className="text-3xl">{current.title}</CardTitle>
+                      <CardTitle className="text-3xl">{(current as any).title}</CardTitle>
                       <CardDescription>
                         <span className="rounded bg-[#FF4500]/15 px-1">YTA</span> if they’re the asshole,{" "}
                         <span className="rounded bg-zinc-100 px-1">NTA</span> if they’re not.
@@ -377,7 +405,7 @@ export default function QuizDeck() {
 
                                 <button
                                   onClick={nextCard}
-                                  aria-label="Next card"
+                                  aria-label="Close"
                                   className="rounded-full p-2 text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-600"
                                 >
                                   <X className="h-5 w-5" />
