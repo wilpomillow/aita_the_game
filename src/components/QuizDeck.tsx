@@ -353,7 +353,7 @@ export default function QuizDeck() {
                       <AnimatePresence>
                         {revealOpen && (
                           <motion.div
-                            className="absolute inset-0 z-20 flex items-center justify-center rounded-b-2xl bg-white/95 backdrop-blur"
+                            className="absolute inset-0 z-20 flex items-center justify-center rounded-b-2xl bg-white/"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
