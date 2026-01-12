@@ -17,7 +17,7 @@ export default function HomePage() {
           Am I the Asshole?
         </h1>
         <span className="-mt-0.5 block text-sm font-medium uppercase tracking-widest text-zinc-500">
-          the game
+          the game | by Wilpo Millow
         </span>
 
           <p className="mx-auto max-w-xl text-xs leading-relaxed text-zinc-600 sm:text-sm">
